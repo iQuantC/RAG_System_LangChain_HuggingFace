@@ -1,0 +1,21 @@
+# Web UI
+gradio
+
+# LLM + RAG
+langchain-core
+langchain-community
+langchain-huggingface
+
+# Transformers and Embeddings
+transformers
+torch
+sentence-transformers
+
+# Vector Store
+faiss-cpu
+
+# PDF Processing
+pymupdf
+
+# Utilities
+fpdf  # optional: used only if you're generating sample PDFs in code

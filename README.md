@@ -4,17 +4,17 @@ In this demo, we build an End-to-End Retrieval-Augmented Generation (RAG) AI Sys
 
 
 ## Requirements
-1. Hugging Face Transformers:   Locall LLM for generation
+1. Hugging Face Transformers:   Local LLM for generation
 2. LangChain:                   Framework for RAG pipeline
 3. FAISS:                       Vector Store
 4. PyTorch:                     Python package for Deep Learning and GPU-accelerated tensor computations
-5. pdfplumber:                  PDF Support
+5. pymupdf:                  PDF Support
 6. sentence-transformers:       For word embeddings
 7. Gradio:                      For Web UI
 
 
 
-## Set up Project Environment
+## Set up Environment
 
 ### Install system packages (if needed) & Create Virtual Environment
 Some Python packages are still catching up with full compatibility for Python3.12 (latest). You may have to use a previous version of Python like 3.10.
@@ -50,7 +50,7 @@ langchain upgrade
 ## Set up config.py to Load the LLM Model
 Add script to the config.py file
 You don't have GPU, use llm model like: "google/flan-t5-base" (lightweight and CPU-friendly)
-
+ 
 ```sh
 # config.py
 from transformers import pipeline
@@ -61,7 +61,7 @@ def load_llm_pipeline():
 ```
 
 ## Build the PDF Ingest Script
-This script will read PDFs from uploaded_pdfs directory, chunks them, embeds them, and stores them in a FAISS vectorstore.
+This script reads PDFs from uploaded_pdfs directory, chunks them, embeds them, and stores them in a FAISS vectorstore. 
 
 ```sh
 # ingest.py
@@ -130,6 +130,45 @@ def ingest_pdfs(directory="uploaded_pdfs"):
 if __name__ == "__main__":
     ingest_pdfs()
 ```
+
+
+## Sample Test PDF 
+Add a sample pdf file (any article or tech doc) in the uploaded_pdfs directory or create a sample pdf with the script below
+
+```sh
+# sample.py
+
+import os
+from fpdf import FPDF
+
+# Ensure directory exists
+os.makedirs("uploaded_pdfs", exist_ok=True)
+
+def txt_to_pdf(txt_path, output_path="uploaded_pdfs/sample.pdf"):
+    with open(txt_path, "r", encoding="utf-8") as f:
+        content = f.readlines()
+
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+
+    for line in content:
+        pdf.cell(200, 10, txt=line.strip(), ln=True)
+
+    pdf.output(output_path)
+    print(f"✅ PDF saved to {output_path}")
+
+# Example usage
+if __name__ == "__main__":
+    txt_file_path = "sample.txt" 
+    txt_to_pdf(txt_file_path)
+```
+
+### Run the Script
+```sh
+python sample.py
+```
+
 
 ### Run the Document Ingestion Script
 ```sh
@@ -247,43 +286,6 @@ python app.py
 On your browser:
 ```sh
 localhost:7860
-```
-
-## Sample Test PDF 
-Add a sample pdf file (any article or tech doc) in the uploaded_pdfs directory or create a sample pdf with the script below
-
-```sh
-# sample.py
-
-import os
-from fpdf import FPDF
-
-# Ensure directory exists
-os.makedirs("uploaded_pdfs", exist_ok=True)
-
-def txt_to_pdf(txt_path, output_path="uploaded_pdfs/sample.pdf"):
-    with open(txt_path, "r", encoding="utf-8") as f:
-        content = f.readlines()
-
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-
-    for line in content:
-        pdf.cell(200, 10, txt=line.strip(), ln=True)
-
-    pdf.output(output_path)
-    print(f"✅ PDF saved to {output_path}")
-
-# Example usage
-if __name__ == "__main__":
-    txt_file_path = "sample.txt" 
-    txt_to_pdf(txt_file_path)
-```
-
-### Run the Script
-```sh
-python sample.py
 ```
 
 On Gradio UI, 
